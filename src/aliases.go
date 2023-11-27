@@ -24,8 +24,11 @@ const (
 
 var (
 	EDITOR_MAP = map[string]string{
+		"code": `code --goto "{{ .Filename }}:{{ .LineNumber }}:{{ .ColumnNumber }}"`,
+		"emacs": `emacs +{{ .LineNumber }}:{{ .ColumnNumber }} --file="{{ .Filename }}"`,
+		"nano": `nano +{{.LineNumber}},{{ .ColumnNumber }} "{{ .Filename }}"`,
+		"nvim": `nvim -c "call cursor({{.LineNumber}}, {{.ColumnNumber}})" "{{.Filename}}"`,
 		"vim": `vim -c "call cursor({{.LineNumber}}, {{.ColumnNumber}})" "{{.Filename}}"`,
-		"vscode": "",
 	}
 )
 

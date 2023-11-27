@@ -10,7 +10,7 @@ flags:
 goos: windows
 goarch: arm64
 
-main: ./main.go
+main: ./src/main.go
 
 binary: rig-{{ .OS }}-{{ .Arch }}.exe
 

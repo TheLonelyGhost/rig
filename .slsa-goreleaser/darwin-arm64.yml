@@ -10,7 +10,7 @@ flags:
 goos: darwin
 goarch: arm64
 
-main: ./main.go
+main: ./src/main.go
 
 binary: rig-{{ .OS }}-{{ .Arch }}
 
