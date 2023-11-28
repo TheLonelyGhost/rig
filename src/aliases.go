@@ -64,6 +64,7 @@ func getEditorCommand() string {
 			return cmd
 		} else {
 			warn("EDITOR", val)
+		}
 	}
 
 	return EDITOR_MAP[EDITOR_CMD_DEFAULT]
