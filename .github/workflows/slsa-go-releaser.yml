@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - '*'
+      - 'v*'
 
 permissions: read-all
 
@@ -17,15 +17,17 @@ jobs:
       tree-state: ${{ steps.ldflags.outputs.tree-state }}
     steps:
       - id: checkout
-        uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # tag=v2.3.4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - id: ldflags
         run: |
-          echo "commit-date=$(git log --date=iso8601-strict -1 --pretty=%ct)" >> "$GITHUB_OUTPUT"
-          echo "commit=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
-          echo "version=$(git describe --tags --always --dirty | cut -c2-)" >> "$GITHUB_OUTPUT"
-          echo "tree-state=$(if git diff --quiet; then echo "clean"; else echo "dirty"; fi)" >> "$GITHUB_OUTPUT"
+          {
+            echo "commit-date=$(git log --date=iso8601-strict -1 --pretty=%ct)"
+            echo "commit=$GITHUB_SHA"
+            echo "version=$(git describe --tags --always --dirty | cut -c2-)"
+            echo "tree-state=$(if git diff --quiet; then echo "clean"; else echo "dirty"; fi)"
+          } >> "$GITHUB_OUTPUT"
 
   build:
     permissions:
@@ -44,6 +46,6 @@ jobs:
     needs: args
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.9.0
     with:
-      go-version-file: src/go.mod
+      go-version-file: go.mod
       evaluated-envs: "COMMIT_DATE:${{needs.args.outputs.commit-date}}, COMMIT:${{needs.args.outputs.commit}}, VERSION:${{needs.args.outputs.version}}, TREE_STATE:${{needs.args.outputs.tree-state}}"
       config-file: .slsa-goreleaser/${{matrix.os}}-${{matrix.arch}}.yml

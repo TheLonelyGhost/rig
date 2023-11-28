@@ -22,7 +22,7 @@
         rig = pkgs.buildGoModule {
           pname = "rig";
           version = "1.0.0";
-          src = ./src;
+          src = ./.;
 
           # vendorHash = pkgs.lib.fakeHash;
           vendorHash = "sha256-skYMlL9SbBoC89tFCTIzyRViEJaviXENASEqr6zSvoo=";
