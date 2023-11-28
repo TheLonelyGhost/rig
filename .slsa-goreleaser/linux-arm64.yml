@@ -12,7 +12,7 @@ goarch: arm64
 
 main: ./src/main.go
 
-binary: rig-{{ .OS }}-{{ .Arch }}
+binary: rig-{{ .Os }}-{{ .Arch }}
 
 ldflags:
   - "-X main.Version={{ .Env.VERSION }}"
