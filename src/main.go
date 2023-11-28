@@ -151,6 +151,15 @@ func main() {
 		os.Exit(passthru(exec.Command("rg", userArgs...)))
 	}
 
+	for _, opt := range []string{"--version", "--help", "--files", "--stats", "--type-list"} {
+		if idx := optionIndex(userArgs, opt); idx >= 0 {
+			if opt == "--help" || opt == "--version" {
+				fmt.Fprintln(os.Stdout, VersionString())
+			}
+			os.Exit(passthru(exec.Command("rg", userArgs...)))
+		}
+	}
+
 	if !isatty(os.Stdin) || !isatty(os.Stdout) {
 		os.Exit(passthru(exec.Command("rg", userArgs...)))
 	}
