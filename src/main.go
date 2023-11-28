@@ -13,6 +13,10 @@ import (
 	"github.com/fatih/color"
 )
 
+const (
+	BOOTSTRAP_ENV = "RIG_BOOTSTRAP"
+)
+
 func optionIndex(args []string, option string) int {
 	for i := len(args) - 1; i >= 0; i-- {
 		if args[i] == option {
@@ -130,7 +134,7 @@ func main() {
 	userArgs := os.Args[1:]
 	rigArgs := []string{"--json", "--no-stats"}
 
-	if shell, ok := os.LookupEnv("RIG_BOOTSTRAP"); ok {
+	if shell, ok := os.LookupEnv(BOOTSTRAP_ENV); ok {
 		bootstrapper, err := NewBootstrapper(shell)
 		if err != nil {
 			log.Fatal(err)
