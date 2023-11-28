@@ -41,7 +41,6 @@
             pkgs.statix
           ];
           buildInputs = [
-            rig
           ];
         };
 

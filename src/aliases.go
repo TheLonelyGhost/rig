@@ -26,7 +26,11 @@ var (
 	EDITOR_MAP = map[string]string{
 		"code": `code --goto "{{ .Filename }}:{{ .LineNumber }}:{{ .ColumnNumber }}"`,
 		"emacs": `emacs +{{ .LineNumber }}:{{ .ColumnNumber }} --file="{{ .Filename }}"`,
+		"hx": `hx "{{ .Filename }}:{{ .LineNumber }}:{{ .ColumnNumber }}"`,
+		"mcedit": `mcedit "{{ .Filename }}:{{ .LineNumber }}"`,
+		"micro": `micro +{{ .LineNumber }}:{{ .ColumnNumber }} "{{ .Filename }}"`,
 		"nano": `nano +{{.LineNumber}},{{ .ColumnNumber }} "{{ .Filename }}"`,
+		"ne": `ne +{{.LineNumber}},{{ .ColumnNumber }} "{{ .Filename }}"`,
 		"nvim": `nvim -c "call cursor({{.LineNumber}}, {{.ColumnNumber}})" "{{.Filename}}"`,
 		"vim": `vim -c "call cursor({{.LineNumber}}, {{.ColumnNumber}})" "{{.Filename}}"`,
 	}
