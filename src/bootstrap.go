@@ -163,6 +163,11 @@ func (b *BashBootstrapper) DoBootstrap() (err error) {
 		return
 	}
 
+	err = os.MkdirAll(filepath.Dir(b.GetRcFile()), 0755)
+	if err != nil {
+		return
+	}
+
 	handle, err := os.OpenFile(b.GetRcFile(), os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	defer func() {
 		err = handle.Close()
@@ -244,6 +249,11 @@ func (f *FishBootstrapper) DoBootstrap() (err error) {
 		return
 	}
 
+	err = os.MkdirAll(filepath.Dir(f.GetRcFile()), 0755)
+	if err != nil {
+		return
+	}
+
 	handle, err := os.OpenFile(f.GetRcFile(), os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	defer func() {
 		err = handle.Close()
@@ -322,6 +332,11 @@ func (z *ZshBootstrapper) DoBootstrap() (err error) {
 	err = buf.Flush()
 	if err != nil {
 		log.Fatal(err)
+		return
+	}
+
+	err = os.MkdirAll(filepath.Dir(z.GetRcFile()), 0755)
+	if err != nil {
 		return
 	}
 
