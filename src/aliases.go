@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"text/template"
 )
 
@@ -45,6 +46,29 @@ type AliasFile struct {
 	latestAlias uint
 }
 
+func getEditorCommand() string {
+	warn := func(envVar string, value string) {
+		fmt.Fprintf(os.Stderr, "WARNING: Unknown value %v for %s. To use %v, please configure it using %s instead.\n", envVar, value, envVar, EDITOR_CMD_FORMAT_ENV)
+	}
+
+	if val := os.Getenv(EDITOR_CMD_ENV); val != "" {
+		if cmd, ok := EDITOR_MAP[filepath.Base(val)]; ok {
+			return cmd
+		} else {
+			warn(EDITOR_CMD_ENV, val)
+		}
+	}
+
+	if val := os.Getenv("EDITOR"); val != "" {
+		if cmd, ok := EDITOR_MAP[filepath.Base(val)]; ok {
+			return cmd
+		} else {
+			warn("EDITOR", val)
+	}
+
+	return EDITOR_MAP[EDITOR_CMD_DEFAULT]
+}
+
 func NewAliasFile() (out *AliasFile) {
 	var (
 		aliasFilename string
@@ -63,11 +87,7 @@ func NewAliasFile() (out *AliasFile) {
 		aliasFilename = ALIAS_FILE_DEFAULT
 	}
 
-	if val, ok := EDITOR_MAP[os.Getenv(EDITOR_CMD_ENV)]; ok {
-		aliasCommand = val
-	} else {
-		aliasCommand = EDITOR_MAP[EDITOR_CMD_DEFAULT]
-	}
+	aliasCommand = getEditorCommand()
 
 	out = &AliasFile{
 		fmtStr:      fmt.Sprintf("alias %s{{.MatchIndex}}='%s'\n", aliasPrefix, aliasCommand),
@@ -104,18 +124,17 @@ func (a *AliasFile) WriteAlias(index uint, filename string, linenum, colnum int6
 }
 
 func (a *AliasFile) WriteFile() {
-	// write the function that cleans up after ourselves
-	_, err := fmt.Fprintf(a.writer, "__rig_cleared=0; __rig-clear() { if [ \"${__rig_cleared}\" -gt 0 ]; then return 0; fi; for i in {1..%d}; do unalias \"%s${i}\"; done; __rig_cleared=1; }\n", a.latestAlias, a.aliasPrefix)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	err = a.writer.Flush()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = os.WriteFile(a.filename, a.buf.Bytes(), 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.WriteFile(fmt.Sprintf("%s.count", a.filename), []byte(a.latestAlias), 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
