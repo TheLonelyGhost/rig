@@ -125,6 +125,8 @@ func (a *AliasFile) WriteAlias(index uint, filename string, linenum, colnum int6
 }
 
 func (a *AliasFile) WriteFile() {
+	var err error
+
 	err = a.writer.Flush()
 	if err != nil {
 		log.Fatal(err)
@@ -135,7 +137,7 @@ func (a *AliasFile) WriteFile() {
 		log.Fatal(err)
 	}
 
-	err = os.WriteFile(fmt.Sprintf("%s.count", a.filename), []byte(a.latestAlias), 0644)
+	err = os.WriteFile(fmt.Sprintf("%s.count", a.filename), []byte(fmt.Sprintf("%d", a.latestAlias)), 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
