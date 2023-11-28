@@ -158,6 +158,8 @@ func main() {
 	// Handle auto-coloring
 	if idx := optionIndex(userArgs, "--color"); idx >= 0 && userArgs[idx+1] == "never" {
 		color.NoColor = true
+	} else if idx := optionIndex(userArgs, "--color=never"); idx >= 0 {
+		color.NoColor = true
 	}
 
 	args := append(rigArgs, userArgs...)
