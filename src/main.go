@@ -151,9 +151,8 @@ func main() {
 		os.Exit(passthru(exec.Command("rg", userArgs...)))
 	}
 
-	args := append(rigArgs, userArgs...)
 	if !isatty(os.Stdin) || !isatty(os.Stdout) {
-		os.Exit(passthru(exec.Command("rg", args...)))
+		os.Exit(passthru(exec.Command("rg", userArgs...)))
 	}
 
 	// Handle auto-coloring
@@ -161,5 +160,6 @@ func main() {
 		color.NoColor = true
 	}
 
+	args := append(rigArgs, userArgs...)
 	os.Exit(generateAliases(exec.Command("rg", args...)))
 }
