@@ -15,6 +15,7 @@ import (
 
 const (
 	BOOTSTRAP_ENV = "RIG_BOOTSTRAP"
+	RIPGREP_CMD_ENV = "RIG_RIPGREP_CMD"
 )
 
 func optionIndex(args []string, option string) int {
@@ -146,9 +147,14 @@ func main() {
 		os.Exit(0)
 	}
 
+	ripgrepCmd := os.Getenv(RIPGREP_CMD_ENV)
+	if ripgrepCmd == "" {
+		ripgrepCmd = "rg"
+	}
+
 	if len(userArgs) == 0 {
 		// Display help message
-		os.Exit(passthru(exec.Command("rg", userArgs...)))
+		os.Exit(passthru(exec.Command(ripgrepCmd, userArgs...)))
 	}
 
 	for _, opt := range []string{"--version", "--help", "--files", "--stats", "--type-list"} {
@@ -156,12 +162,12 @@ func main() {
 			if opt == "--help" || opt == "--version" {
 				fmt.Fprintln(os.Stdout, VersionString())
 			}
-			os.Exit(passthru(exec.Command("rg", userArgs...)))
+			os.Exit(passthru(exec.Command(ripgrepCmd, userArgs...)))
 		}
 	}
 
 	if !isatty(os.Stdin) || !isatty(os.Stdout) {
-		os.Exit(passthru(exec.Command("rg", userArgs...)))
+		os.Exit(passthru(exec.Command(ripgrepCmd, userArgs...)))
 	}
 
 	// Handle auto-coloring
@@ -172,5 +178,5 @@ func main() {
 	}
 
 	args := append(rigArgs, userArgs...)
-	os.Exit(generateAliases(exec.Command("rg", args...)))
+	os.Exit(generateAliases(exec.Command(ripgrepCmd, args...)))
 }
