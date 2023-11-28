@@ -10,7 +10,7 @@ flags:
 goos: linux
 goarch: arm64
 
-main: ./main.go
+main: ./
 
 binary: rig-{{ .Os }}-{{ .Arch }}
 
