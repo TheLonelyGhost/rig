@@ -49,35 +49,35 @@ function __rig-clear() {
 `
 	ZSH_BOOTSTRAPPER = BASH_BOOTSTRAPPER
 	FISH_BOOTSTRAPPER = `
-function rg()
+function rig
   __rig-clear
-  rig "$@"
+  command rig $argv
 
   source "${{ .AliasFileEnv }}"
 end
 function __rig-clear
-  if not test -e "${ {{ .AliasFileEnv }} }.count"
+  if not test -e "${{ .AliasFileEnv }}.count"
     return 0
   end
 
-  set -f alias_count (cat "${ {{ .AliasFileEnv }} }.count")
+  set -f alias_count (cat "${{ .AliasFileEnv }}.count")
 
   if test -z $alias_count
     return 1
-  else if test $alias_count -gt 0
+  else if test $alias_count -eq 0
     return 0
   end
 
   for i in (seq $alias_count)
-    function -e "${ {{ .AliasPrefixEnv }} }${i}"
+    functions -e "${{ .AliasPrefixEnv }}$i"
   end
 
-  echo 0 > "${ {{ .AliasFileEnv }} }.count"
+  echo 0 > "${{ .AliasFileEnv }}.count"
 end
-if test -z "${ {{ .AliasPrefixEnv }} }"
+if test -z "${{ .AliasPrefixEnv }}"
   set -u {{ .AliasPrefixEnv }} '{{ .AliasPrefixDefault }}'
 end
-if test -z "${ {{ .AliasFileEnv }} }"
+if test -z "${{ .AliasFileEnv }}"
   set -u {{ .AliasFileEnv }} '{{ .AliasFileDefault }}'
 end
 `
@@ -192,7 +192,7 @@ type FishBootstrapper struct {
 
 func (f *FishBootstrapper) GetRcFile() string {
 	if f.rcFile == "" {
-		f.rcFile = os.ExpandEnv("${HOME}/.config/fish/config.fish")
+		f.rcFile = os.ExpandEnv("${HOME}/.config/fish/conf.d/rig.fish")
 	}
 	return f.rcFile
 }
