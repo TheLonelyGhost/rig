@@ -129,6 +129,7 @@ func (b *BashBootstrapper) IsBootstrapped() bool {
 }
 func (b *BashBootstrapper) DoBootstrap() (err error) {
 	if b.IsBootstrapped() {
+		log.Printf("%s is already bootstrapped\n", b.GetRcFile())
 		return
 	}
 	buffer := bytes.Buffer{}
@@ -181,6 +182,7 @@ func (b *BashBootstrapper) DoBootstrap() (err error) {
 
 	_, err = handle.Write(buffer.Bytes())
 
+	log.Printf("Finished bootstrapping %s with shell hooks. Please restart your terminal session.\n", b.GetRcFile())
 	return
 }
 
@@ -215,6 +217,7 @@ func (f *FishBootstrapper) IsBootstrapped() bool {
 }
 func (f *FishBootstrapper) DoBootstrap() (err error) {
 	if f.IsBootstrapped() {
+		log.Printf("%s is already bootstrapped\n", f.GetRcFile())
 		return
 	}
 	buffer := bytes.Buffer{}
@@ -267,6 +270,7 @@ func (f *FishBootstrapper) DoBootstrap() (err error) {
 
 	_, err = handle.Write(buffer.Bytes())
 
+	log.Printf("Finished bootstrapping %s with shell hooks. Please restart your terminal session.\n", f.GetRcFile())
 	return
 }
 
@@ -301,6 +305,7 @@ func (z *ZshBootstrapper) IsBootstrapped() bool {
 }
 func (z *ZshBootstrapper) DoBootstrap() (err error) {
 	if z.IsBootstrapped() {
+		log.Printf("%s is already bootstrapped\n", z.GetRcFile())
 		return
 	}
 	buffer := bytes.Buffer{}
@@ -359,6 +364,8 @@ func (z *ZshBootstrapper) DoBootstrap() (err error) {
 	if err != nil {
 		panic(err)
 	}
+
+	log.Printf("Finished bootstrapping %s with shell hooks. Please restart your terminal session.\n", z.GetRcFile())
 	return
 }
 
