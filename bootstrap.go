@@ -26,26 +26,26 @@ const (
 # === BEGIN RIG BOOTSTRAPPER === #
 `
 	BASH_BOOTSTRAPPER = `
-function rg() {
+function rig() {
   __rig-clear
-  rig "$@"
-  source "${ {{ .AliasFileEnv }}:-{{ .AliasFileDefault }} }"
+  command rig "$@"
+  source "{{ "${" }}{{ .AliasFileEnv }}:-{{ .AliasFileDefault }}{{ "}" }}"
 }
 function __rig-clear() {
   local alias_count
-  if [ -e "${ {{ .AliasFileEnv }} }.count" ]; then
-	alias_count="$(cat "${ {{ .AliasFileEnv }} }.count")"
+  if [ -e "{{ "${" }}{{ .AliasFileEnv }}{{ "}" }}.count" ]; then
+	alias_count="$(cat "{{ "${" }}{{ .AliasFileEnv }}{{ "}" }}.count")"
   fi
   if [ "$alias_count" -eq 0 ]; then return 0; fi
 
   for i in $(seq $alias_count); do
-    unalias "${ {{ .AliasPrefixEnv }} }${i}"
+    unalias "{{ "${" }}{{ .AliasPrefixEnv }}{{ "}" }}${i}"
   done
 
-  echo 0 > "${ {{ .AliasFileEnv }} }.count"
+  echo 0 > "{{ "${" }}{{ .AliasFileEnv }}{{ "}" }}.count"
 }
-: "${ {{ .AliasPrefixEnv }}:={{ .AliasPrefixDefault }} }"
-: "${ {{ .AliasFileEnv }}:={{ .AliasFileDefault }} }"
+: "{{ "${" }}{{ .AliasPrefixEnv }}:={{ .AliasPrefixDefault }}{{ "}" }}"
+: "{{ "${" }}{{ .AliasFileEnv }}:={{ .AliasFileDefault }}{{ "}" }}"
 `
 	ZSH_BOOTSTRAPPER = BASH_BOOTSTRAPPER
 	FISH_BOOTSTRAPPER = `
@@ -337,6 +337,7 @@ func (z *ZshBootstrapper) DoBootstrap() (err error) {
 
 	err = os.MkdirAll(filepath.Dir(z.GetRcFile()), 0755)
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 
@@ -344,27 +345,35 @@ func (z *ZshBootstrapper) DoBootstrap() (err error) {
 	defer func() {
 		err = handle.Close()
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
+			// log.Fatal(err)
 		}
 	}()
 	if err != nil {
-		return
+		panic(err)
+		// return
 	}
 
 	_, err = handle.Write(buffer.Bytes())
 
+	if err != nil {
+		panic(err)
+	}
 	return
 }
 
 func NewBootstrapper(shell string) (out ShellBootstrapper, err error) {
 	switch filepath.Base(shell) {
 	case "bash":
+		log.Println("Detected bash bootstrap")
 		out = &BashBootstrapper{}
 
 	case "fish":
+		log.Println("Detected fish bootstrap")
 		out = &FishBootstrapper{}
 
 	case "zsh":
+		log.Println("Detected zsh bootstrap")
 		out = &ZshBootstrapper{}
 
 	default:

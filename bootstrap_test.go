@@ -14,6 +14,7 @@ func TestBashBootstrap(t *testing.T) {
 		if e := f.Close(); e != nil {
 			fmt.Println(e)
 		}
+		_ = os.Remove(f.Name())
 	}()
 	if err != nil {
 		fmt.Println(err)

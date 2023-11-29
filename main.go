@@ -143,6 +143,7 @@ func main() {
 		err = bootstrapper.DoBootstrap()
 		if err != nil {
 			log.Fatal(err)
+			panic(err)
 		}
 		os.Exit(0)
 	}
