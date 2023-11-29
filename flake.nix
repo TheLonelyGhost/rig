@@ -38,9 +38,11 @@
           nativeBuildInputs = [
             pkgs.bashInteractive
             pkgs.go
-            pkgs.statix
           ];
           buildInputs = [
+            pkgs.statix
+            pkgs.fish
+            pkgs.zsh
           ];
         };
 
